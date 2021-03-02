@@ -1,52 +1,63 @@
 import logo from "./logo.svg";
+import Urbit_Logo from "./Urbit_Logo.svg";
 import React from "react";
-import create from 'zustand';
+import create from "zustand";
 import "./App.css";
 
-// declare some types
-type IUser = {name: string};
-type Store = 
-  {bears: number
-   increasePopulation: () => void
-   removeAllBears: () => void
-  };
+// declare types
+type Todo = { userId: number; id: number; title: string; completed: boolean };
+type Store = {
+  bears: number;
+  todo: Todo | null;
+  increasePopulation: () => void;
+  removeAllBears: () => void;
+  getTodo: (id: number) => void;
+};
 
 // declare a store
-const useStore = create<Store>(set => ({
+const useStore = create<Store>((set) => ({
   bears: 0,
-  increasePopulation: () => set(state => ({ bears: state.bears + 1 })),
-  removeAllBears: () => set({ bears: 0 })
+  todo: null,
+  increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
+  removeAllBears: () => set({ bears: 0 }),
+  getTodo: async (id) => {
+    const resp = await fetch(
+      "https://jsonplaceholder.typicode.com/todos/" + id
+    );
+    const json = await resp.json();
+    set({ todo: json });
+  },
 }));
 
-// operate on the store outside React component (note that we don't *call* useStore, but access a property)
-useStore.setState({bears: 9});
+// operate on the store outside React component
+// note that we don't *call* useStore, but rather access a property
+useStore.setState({ bears: 9 });
 
 function App() {
-  const [val, setVal] = React.useState<IUser | null>(null);
-  const bears = useStore(state => state.bears);
-  const increasePopulation = useStore(state => state.increasePopulation);
+  // pick apart the Zustand store inside our component
+  const bears = useStore((state) => state.bears);
+  const todo = useStore((state) => state.todo);
+  const increasePopulation = useStore((state) => state.increasePopulation);
+  const getTodo = useStore((state) => state.getTodo);
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        <img src={Urbit_Logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Edit <code>src/App.tsx</code> and save to reload.
         </p>
-        <p>Zustand state</p>
-        <p>{bears} Bear{bears === 1 ? '' : 's'}</p>
+        <p>
+          {bears} Bear{bears === 1 ? "" : "s"}
+        </p>
         <button onClick={() => increasePopulation()}>one up</button>
-        <button onClick={() => increasePopulation()}>Increase Manually</button>
+        <button onClick={() => useStore.setState({ bears: bears + 3 })}>
+          Increase Manually by 3
+        </button>
         <p />
-        <p>{val !== null ? val.name : "BLANK"}</p>
-        <button onClick={() => setVal({name: "me"})}>change string</button>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+
+        <h3>Current TODO</h3>
+        <p>{todo !== null ? JSON.stringify(todo) : "No TODO Selected"}</p>
+        <button onClick={() => getTodo(1)}>Get TODO remotely/async</button>
       </header>
     </div>
   );

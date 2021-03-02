@@ -2,11 +2,14 @@
 This repo is a how-to/reference for making a React application that interacts with Urbit. All logic is contained in the top-level `App.tsx`, and can then be split out into other files as the user desires.
 
 ## Patterns Demonstrated
-* React Hooks and `useEffect`
-* Creating a custom Urbit API
-* Accessing a local Urbit dev server and remote server
+* TODO combine `useEffect` Hook with Zustand store
+* TODO Creating a custom Urbit API
+* TODO Reducers
+* TODO scry/poke/thread/subscription
+* TODO Accessing a local Urbit dev server and remote server
 * Using [zustand](https://github.com/pmndrs/zustand) for state
-* Lazy-loading state with scry GETs
+* Updating state outside of React components
+* Lazy-loading state with zustand
 
 ## Available Scripts
 
