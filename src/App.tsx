@@ -20,6 +20,10 @@ const useStore = create<Store>((set) => ({
   todo: null,
   increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
   removeAllBears: () => set({ bears: 0 }),
+
+  // Use this async pattern to do GET requests (queries to scrys)
+  // We don't need a reducer here because we know exactly what we're getting back,
+  // and we get it right away
   getTodo: async (id) => {
     const resp = await fetch(
       "https://jsonplaceholder.typicode.com/todos/" + id
