@@ -1,10 +1,18 @@
-import logo from "./logo.svg";
 import Urbit_Logo from "./Urbit_Logo.svg";
 import React from "react";
+import Urbit from "@urbit/http-api";
 import create from "zustand";
+import _ from "lodash";
 import "./App.css";
 
-// declare types
+// default ~zod +code
+const code: string = "lidlut-tabwed-pillex-ridrup";
+const url: string = "http://localhost:80";
+
+//const code: string = "lavdyr-mocdut-podtex-balsed";
+//const url: string = "http://localhost:8080";
+
+// declare types (would be in a types file or dir)
 type Todo = { userId: number; id: number; title: string; completed: boolean };
 type Store = {
   bears: number;
@@ -13,6 +21,15 @@ type Store = {
   removeAllBears: () => void;
   getTodo: (id: number) => void;
 };
+
+//
+const useApi = _.memoize(() => {
+  const api = new Urbit(url, code);
+  (async () => {
+    await api.connect();
+  })();
+  return api;
+});
 
 // declare a store
 const useStore = create<Store>((set) => ({
@@ -38,6 +55,8 @@ const useStore = create<Store>((set) => ({
 useStore.setState({ bears: 9 });
 
 function App() {
+  const api = useApi();
+
   // pick apart the Zustand store inside our component
   const bears = useStore((state) => state.bears);
   const todo = useStore((state) => state.todo);
@@ -58,10 +77,11 @@ function App() {
           Increase Manually by 3
         </button>
         <p />
-
         <h3>Current TODO</h3>
         <p>{todo !== null ? JSON.stringify(todo) : "No TODO Selected"}</p>
         <button onClick={() => getTodo(1)}>Get TODO remotely/async</button>
+        <h4>Connection</h4>
+        <p>{api.ship !== null ? api.ship : "Not connected"}</p>
       </header>
     </div>
   );

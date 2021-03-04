@@ -1,4 +1,5 @@
 # Example Urbit React App
+
 This repo is a how-to/reference for making a React application that interacts with Urbit. All logic is contained in the top-level `App.tsx`, and can then be split out into other files as the user desires.
 
 ## Patterns Demonstrated
@@ -10,6 +11,11 @@ This repo is a how-to/reference for making a React application that interacts wi
 * Using [zustand](https://github.com/pmndrs/zustand) for state
 * Updating state outside of React components
 * Lazy-loading state with zustand
+
+## Requirements
+```javascript
+nvm use 14.16
+```
 
 ## Available Scripts
 
